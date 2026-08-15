@@ -6,6 +6,3 @@ class Solution(object):
                 return True
             seen.add(num)
         return False
-
-    
-        
