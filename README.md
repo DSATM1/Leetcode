@@ -30,10 +30,10 @@ Every problem helps me practice one or more of these skills:
 
 | Metric | Progress |
 |---|---:|
-| Total Problems | **116** |
-| Solved | **116** |
+| Total Problems | **117** |
+| Solved | **117** |
 | Unsolved | **0** |
-| Easy | **41** |
+| Easy | **42** |
 | Medium | **63** |
 | Hard | **12** |
 
@@ -161,10 +161,11 @@ Every problem helps me practice one or more of these skills:
 | 110 | [4037. Lexicographically Smallest Palindromic Permutation Greater Than Target](https://leetcode.com/problems/lexicographically-smallest-palindromic-permutation-greater-than-target/) | 🔴 Hard | py | [py](4037-lexicographically-smallest-palindromic-permutation-greater-than-target) |
 | 111 | [4080. Smallest Missing Multiple Of K](https://leetcode.com/problems/smallest-missing-multiple-of-k/) | 🟢 Easy | py | [py](4080-smallest-missing-multiple-of-k) |
 | 112 | [4107. Find Missing Elements](https://leetcode.com/problems/find-missing-elements/) | 🟢 Easy | py | [py](4107-find-missing-elements) |
-| 113 | [4256. Construct Uniform Parity Array I](https://leetcode.com/problems/construct-uniform-parity-array-i/) | 🟢 Easy | py | [py](4256-construct-uniform-parity-array-i) |
-| 114 | [4258. Construct Uniform Parity Array Ii](https://leetcode.com/problems/construct-uniform-parity-array-ii/) | 🟡 Medium | py | [py](4258-construct-uniform-parity-array-ii) |
-| 115 | [4284. Smallest Stable Index I](https://leetcode.com/problems/smallest-stable-index-i/) | 🟢 Easy | py | [py](4284-smallest-stable-index-i) |
-| 116 | [4285. Smallest Stable Index Ii](https://leetcode.com/problems/smallest-stable-index-ii/) | 🟡 Medium | py | [py](4285-smallest-stable-index-ii) |
+| 113 | [4216. Weighted Word Mapping](https://leetcode.com/problems/weighted-word-mapping/) | 🟢 Easy | py | [py](4216-weighted-word-mapping) |
+| 114 | [4256. Construct Uniform Parity Array I](https://leetcode.com/problems/construct-uniform-parity-array-i/) | 🟢 Easy | py | [py](4256-construct-uniform-parity-array-i) |
+| 115 | [4258. Construct Uniform Parity Array Ii](https://leetcode.com/problems/construct-uniform-parity-array-ii/) | 🟡 Medium | py | [py](4258-construct-uniform-parity-array-ii) |
+| 116 | [4284. Smallest Stable Index I](https://leetcode.com/problems/smallest-stable-index-i/) | 🟢 Easy | py | [py](4284-smallest-stable-index-i) |
+| 117 | [4285. Smallest Stable Index Ii](https://leetcode.com/problems/smallest-stable-index-ii/) | 🟡 Medium | py | [py](4285-smallest-stable-index-ii) |
 
 <!-- PROBLEM-LIST:END -->
 
