@@ -1,20 +1,178 @@
-name: Update LeetCode README
+name: Sync LeetCode and Update README
 
 on:
+  schedule:
+    - cron: '17 * * * *'
   push:
     branches: [main]
+    paths-ignore:
+      - 'README.md'
+      - '.github/workflows/update-readme.yml'
+      - '.github/leetcode-sync-state.json'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  update-readme:
+  sync:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Sync accepted LeetCode submissions
+        env:
+          LEETCODE_SESSION: ${{ secrets.LEETCODE_SESSION }}
+          LEETCODE_USERNAME: surajpokale
+        shell: python
+        run: |
+          import json
+          import os
+          import re
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+
+          session = os.environ.get('LEETCODE_SESSION', '').strip()
+          if not session:
+              print('LEETCODE_SESSION is not configured. Skipping LeetCode sync.')
+              print('Add it in GitHub: Settings -> Secrets and variables -> Actions.')
+              raise SystemExit(0)
+
+          ENDPOINT = 'https://leetcode.com/graphql'
+          headers = {
+              'Content-Type': 'application/json',
+              'User-Agent': 'Mozilla/5.0',
+              'Referer': 'https://leetcode.com/',
+              'Cookie': f'LEETCODE_SESSION={session}',
+          }
+
+          def graphql(query, variables):
+              payload = json.dumps({'query': query, 'variables': variables}).encode()
+              request = Request(ENDPOINT, data=payload, headers=headers, method='POST')
+              with urlopen(request, timeout=30) as response:
+                  body = json.loads(response.read().decode('utf-8'))
+              if body.get('errors'):
+                  raise RuntimeError(json.dumps(body['errors']))
+              return body['data']
+
+          recent_query = '''
+          query recentAcSubmissionList($username: String!, $limit: Int!) {
+            recentAcSubmissionList(username: $username, limit: $limit) {
+              id
+              title
+              titleSlug
+              timestamp
+              lang
+            }
+          }
+          '''
+
+          detail_query = '''
+          query submissionDetails($submissionId: ID!) {
+            submissionDetails(submissionId: $submissionId) {
+              code
+              lang
+              timestamp
+              question {
+                questionId
+                title
+                titleSlug
+                difficulty
+              }
+            }
+          }
+          '''
+
+          recent = graphql(recent_query, {
+              'username': os.environ['LEETCODE_USERNAME'],
+              'limit': 100,
+          })['recentAcSubmissionList'] or []
+
+          state_path = Path('.github/leetcode-sync-state.json')
+          state_path.parent.mkdir(parents=True, exist_ok=True)
+          if state_path.exists():
+              state = json.loads(state_path.read_text(encoding='utf-8'))
+          else:
+              state = {'submission_ids': []}
+
+          processed = set(str(x) for x in state.get('submission_ids', []))
+          synced = 0
+
+          extensions = {
+              'python': '.py', 'python3': '.py',
+              'java': '.java',
+              'cpp': '.cpp', 'c++': '.cpp',
+              'javascript': '.js', 'js': '.js',
+              'typescript': '.ts', 'ts': '.ts',
+              'c': '.c', 'csharp': '.cs', 'c#': '.cs',
+              'go': '.go', 'golang': '.go',
+              'rust': '.rs', 'kotlin': '.kt', 'swift': '.swift',
+          }
+
+          for item in recent:
+              submission_id = str(item['id'])
+              if submission_id in processed:
+                  continue
+
+              details = graphql(detail_query, {'submissionId': submission_id}).get('submissionDetails')
+              if not details or not details.get('code') or not details.get('question'):
+                  processed.add(submission_id)
+                  continue
+
+              question = details['question']
+              qid = str(question['questionId'])
+              slug = question['titleSlug']
+              title = question['title']
+              difficulty = question.get('difficulty', 'Unknown')
+              lang = (details.get('lang') or item.get('lang') or '').lower()
+              ext = extensions.get(lang)
+
+              if not ext:
+                  print(f'Skipping {title}: unsupported language {lang}')
+                  processed.add(submission_id)
+                  continue
+
+              safe_slug = re.sub(r'[^a-z0-9]+', '-', slug.lower()).strip('-')
+              target = None
+
+              # Reuse an existing folder with the same LeetCode slug, even if its
+              # numeric prefix was named differently in the repository.
+              for folder in Path('.').iterdir():
+                  if folder.is_dir() and re.match(r'^\d+-', folder.name):
+                      existing_slug = re.sub(r'^\d+-', '', folder.name)
+                      if existing_slug == safe_slug:
+                          target = folder
+                          break
+
+              if target is None:
+                  target = Path(f'{qid}-{safe_slug}')
+              target.mkdir(parents=True, exist_ok=True)
+
+              solution_path = target / f'{safe_slug}{ext}'
+              solution_path.write_text(details['code'], encoding='utf-8')
+
+              readme_path = target / 'README.md'
+              if not readme_path.exists():
+                  readme_path.write_text(
+                      f'# {qid}. {title}\n\n'
+                      f'**Difficulty:** {difficulty}\n\n'
+                      f'**Language:** {lang}\n\n'
+                      f'**LeetCode:** https://leetcode.com/problems/{slug}/\n\n'
+                      'This solution was synced automatically from my accepted LeetCode submission.\n',
+                      encoding='utf-8'
+                  )
+
+              processed.add(submission_id)
+              synced += 1
+              print(f'Synced: {qid}. {title} ({difficulty}, {lang})')
+
+          # Keep the state file small while retaining enough history to avoid
+          # repeatedly importing the same recent submissions.
+          state['submission_ids'] = list(processed)[-500:]
+          state_path.write_text(json.dumps(state, indent=2), encoding='utf-8')
+          print(f'LeetCode sync complete. New submissions synced: {synced}')
 
       - name: Generate README dashboard
         shell: python
@@ -24,12 +182,13 @@ jobs:
           from datetime import date
 
           root = Path('.')
-          supported = {'.py', '.java', '.cpp', '.js', '.ts'}
+          supported = {'.py', '.java', '.cpp', '.js', '.ts', '.c', '.cs', '.go', '.rs', '.kt', '.swift'}
           problems = []
 
           for folder in root.iterdir():
               if not folder.is_dir() or not re.match(r'^\d+-', folder.name):
                   continue
+
               match = re.match(r'^(\d+)-(.*)$', folder.name)
               if not match:
                   continue
@@ -38,11 +197,7 @@ jobs:
               slug = match.group(2)
               readme = folder / 'README.md'
               readme_text = readme.read_text(encoding='utf-8') if readme.exists() else ''
-
-              solution_files = sorted(
-                  p for p in folder.iterdir()
-                  if p.is_file() and p.suffix.lower() in supported
-              )
+              solution_files = sorted(p for p in folder.iterdir() if p.is_file() and p.suffix.lower() in supported)
               solved = bool(solution_files)
 
               title = slug.replace('-', ' ').title()
@@ -97,26 +252,20 @@ jobs:
               badge = {'Easy':'🟢 Easy', 'Medium':'🟡 Medium', 'Hard':'🔴 Hard'}.get(p['difficulty'], '⚪ Unspecified')
               solution = f'[{p["language"]}]({p["relative"]})' if p['solved'] else '—'
               table.append(f'| {idx} | [{p["number"]}. {p["title"]}]({p["url"]}) | {badge} | {p["language"]} | {solution} |')
-          problem_list = '\n'.join(table)
 
           readme_path = root / 'README.md'
           text = readme_path.read_text(encoding='utf-8')
-          text = re.sub(
-              r'<!-- AUTO-GENERATED:START -->.*?<!-- AUTO-GENERATED:END -->',
-              f'<!-- AUTO-GENERATED:START -->\n\n{dashboard}\n\n<!-- AUTO-GENERATED:END -->',
-              text, flags=re.S)
-          text = re.sub(
-              r'<!-- PROBLEM-LIST:START -->.*?<!-- PROBLEM-LIST:END -->',
-              f'<!-- PROBLEM-LIST:START -->\n\n{problem_list}\n\n<!-- PROBLEM-LIST:END -->',
-              text, flags=re.S)
+          text = re.sub(r'<!-- AUTO-GENERATED:START -->.*?<!-- AUTO-GENERATED:END -->', f'<!-- AUTO-GENERATED:START -->\n\n{dashboard}\n\n<!-- AUTO-GENERATED:END -->', text, flags=re.S)
+          text = re.sub(r'<!-- PROBLEM-LIST:START -->.*?<!-- PROBLEM-LIST:END -->', f'<!-- PROBLEM-LIST:START -->\n\n{"\n".join(table)}\n\n<!-- PROBLEM-LIST:END -->', text, flags=re.S)
           readme_path.write_text(text, encoding='utf-8')
           print(f'Generated: total={total}, solved={solved_count}, unsolved={unsolved_count}, easy={easy}, medium={medium}, hard={hard}')
 
-      - name: Commit README changes
+      - name: Commit and push changes
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add README.md
+          git add README.md .github/leetcode-sync-state.json
+          git add --all
           git diff --cached --quiet && exit 0
-          git commit -m 'docs: automatically update LeetCode progress'
+          git commit -m 'chore: sync LeetCode submissions and progress'
           git push
