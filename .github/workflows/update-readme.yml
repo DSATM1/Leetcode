@@ -32,144 +32,98 @@ jobs:
           import os
           import re
           from pathlib import Path
+          from urllib.parse import urlencode
           from urllib.request import Request, urlopen
+          from urllib.error import HTTPError
 
           session = os.environ.get('LEETCODE_SESSION', '').strip()
           if not session:
-              print('LEETCODE_SESSION is not configured. Skipping LeetCode sync.')
-              print('Add it in GitHub: Settings -> Secrets and variables -> Actions.')
-              raise SystemExit(0)
+              raise SystemExit('LEETCODE_SESSION is not configured.')
 
-          ENDPOINT = 'https://leetcode.com/graphql'
           headers = {
-              'Content-Type': 'application/json',
               'User-Agent': 'Mozilla/5.0',
               'Referer': 'https://leetcode.com/',
               'Cookie': f'LEETCODE_SESSION={session}',
           }
 
-          def graphql(query, variables):
-              payload = json.dumps({'query': query, 'variables': variables}).encode()
-              request = Request(ENDPOINT, data=payload, headers=headers, method='POST')
+          # LeetCode's submission REST endpoint is more stable for fetching
+          # the actual submitted source code than the submissionDetails query.
+          query = urlencode({'offset': 0, 'limit': 100})
+          request = Request(
+              f'https://leetcode.com/api/submissions/?{query}',
+              headers=headers,
+          )
+          try:
               with urlopen(request, timeout=30) as response:
-                  body = json.loads(response.read().decode('utf-8'))
-              if body.get('errors'):
-                  raise RuntimeError(json.dumps(body['errors']))
-              return body['data']
+                  payload = json.loads(response.read().decode('utf-8'))
+          except HTTPError as exc:
+              raise SystemExit(f'LeetCode submissions API returned HTTP {exc.code}. The LEETCODE_SESSION may be expired.')
 
-          recent_query = '''
-          query recentAcSubmissionList($username: String!, $limit: Int!) {
-            recentAcSubmissionList(username: $username, limit: $limit) {
-              id
-              title
-              titleSlug
-              timestamp
-              lang
-            }
-          }
-          '''
-
-          detail_query = '''
-          query submissionDetails($submissionId: ID!) {
-            submissionDetails(submissionId: $submissionId) {
-              code
-              lang
-              timestamp
-              question {
-                questionId
-                title
-                titleSlug
-                difficulty
-              }
-            }
-          }
-          '''
-
-          recent = graphql(recent_query, {
-              'username': os.environ['LEETCODE_USERNAME'],
-              'limit': 100,
-          })['recentAcSubmissionList'] or []
+          submissions = payload.get('submissions_dump') or payload.get('submissions') or []
+          accepted = [s for s in submissions if str(s.get('status_display', '')).lower() == 'accepted']
+          print(f'Fetched {len(submissions)} recent submissions; {len(accepted)} accepted.')
 
           state_path = Path('.github/leetcode-sync-state.json')
           state_path.parent.mkdir(parents=True, exist_ok=True)
-          if state_path.exists():
-              state = json.loads(state_path.read_text(encoding='utf-8'))
-          else:
-              state = {'submission_ids': []}
-
+          state = json.loads(state_path.read_text(encoding='utf-8')) if state_path.exists() else {'submission_ids': []}
           processed = set(str(x) for x in state.get('submission_ids', []))
-          synced = 0
 
           extensions = {
-              'python': '.py', 'python3': '.py',
-              'java': '.java',
-              'cpp': '.cpp', 'c++': '.cpp',
-              'javascript': '.js', 'js': '.js',
-              'typescript': '.ts', 'ts': '.ts',
-              'c': '.c', 'csharp': '.cs', 'c#': '.cs',
-              'go': '.go', 'golang': '.go',
+              'python': '.py', 'python3': '.py', 'java': '.java',
+              'cpp': '.cpp', 'c++': '.cpp', 'javascript': '.js', 'js': '.js',
+              'typescript': '.ts', 'ts': '.ts', 'c': '.c',
+              'csharp': '.cs', 'c#': '.cs', 'go': '.go', 'golang': '.go',
               'rust': '.rs', 'kotlin': '.kt', 'swift': '.swift',
           }
 
-          for item in recent:
-              submission_id = str(item['id'])
-              if submission_id in processed:
+          synced = 0
+          for item in reversed(accepted):
+              submission_id = str(item.get('id', ''))
+              if not submission_id or submission_id in processed:
                   continue
 
-              details = graphql(detail_query, {'submissionId': submission_id}).get('submissionDetails')
-              if not details or not details.get('code') or not details.get('question'):
-                  processed.add(submission_id)
-                  continue
-
-              question = details['question']
-              qid = str(question['questionId'])
-              slug = question['titleSlug']
-              title = question['title']
-              difficulty = question.get('difficulty', 'Unknown')
-              lang = (details.get('lang') or item.get('lang') or '').lower()
+              code = item.get('code')
+              slug = item.get('title_slug') or item.get('titleSlug')
+              title = item.get('title') or slug or 'LeetCode Problem'
+              lang = str(item.get('lang') or '').lower()
               ext = extensions.get(lang)
+              qid = str(item.get('question_id') or '')
 
-              if not ext:
-                  print(f'Skipping {title}: unsupported language {lang}')
+              if not code or not slug or not ext:
+                  print(f'Skipping submission {submission_id}: missing code, slug, or unsupported language ({lang}).')
                   processed.add(submission_id)
                   continue
 
               safe_slug = re.sub(r'[^a-z0-9]+', '-', slug.lower()).strip('-')
               target = None
-
-              # Reuse an existing folder with the same LeetCode slug, even if its
-              # numeric prefix was named differently in the repository.
               for folder in Path('.').iterdir():
                   if folder.is_dir() and re.match(r'^\d+-', folder.name):
-                      existing_slug = re.sub(r'^\d+-', '', folder.name)
-                      if existing_slug == safe_slug:
+                      if re.sub(r'^\d+-', '', folder.name) == safe_slug:
                           target = folder
                           break
 
               if target is None:
-                  target = Path(f'{qid}-{safe_slug}')
+                  target = Path(f'{qid or submission_id}-{safe_slug}')
               target.mkdir(parents=True, exist_ok=True)
 
               solution_path = target / f'{safe_slug}{ext}'
-              solution_path.write_text(details['code'], encoding='utf-8')
+              solution_path.write_text(code, encoding='utf-8')
 
               readme_path = target / 'README.md'
               if not readme_path.exists():
                   readme_path.write_text(
-                      f'# {qid}. {title}\n\n'
-                      f'**Difficulty:** {difficulty}\n\n'
+                      f'# {qid + ". " if qid else ""}{title}\n\n'
+                      f'**Difficulty:** Unspecified\n\n'
                       f'**Language:** {lang}\n\n'
                       f'**LeetCode:** https://leetcode.com/problems/{slug}/\n\n'
-                      'This solution was synced automatically from my accepted LeetCode submission.\n',
+                      'This solution was synced automatically from an accepted LeetCode submission.\n',
                       encoding='utf-8'
                   )
 
               processed.add(submission_id)
               synced += 1
-              print(f'Synced: {qid}. {title} ({difficulty}, {lang})')
+              print(f'Synced: {qid}. {title} ({lang})')
 
-          # Keep the state file small while retaining enough history to avoid
-          # repeatedly importing the same recent submissions.
           state['submission_ids'] = list(processed)[-500:]
           state_path.write_text(json.dumps(state, indent=2), encoding='utf-8')
           print(f'LeetCode sync complete. New submissions synced: {synced}')
@@ -188,7 +142,6 @@ jobs:
           for folder in root.iterdir():
               if not folder.is_dir() or not re.match(r'^\d+-', folder.name):
                   continue
-
               match = re.match(r'^(\d+)-(.*)$', folder.name)
               if not match:
                   continue
@@ -213,16 +166,7 @@ jobs:
                   difficulty = diff_match.group(1).capitalize()
 
               language = ', '.join(sorted({p.suffix.lower().lstrip('.') for p in solution_files})) or '—'
-              problems.append({
-                  'number': number,
-                  'slug': slug,
-                  'title': title,
-                  'difficulty': difficulty,
-                  'solved': solved,
-                  'language': language,
-                  'url': f'https://leetcode.com/problems/{slug}/',
-                  'relative': folder.as_posix(),
-              })
+              problems.append({'number': number, 'slug': slug, 'title': title, 'difficulty': difficulty, 'solved': solved, 'language': language, 'url': f'https://leetcode.com/problems/{slug}/', 'relative': folder.as_posix()})
 
           problems.sort(key=lambda x: x['number'])
           total = len(problems)
@@ -233,17 +177,11 @@ jobs:
           hard = sum(p['difficulty'] == 'Hard' for p in problems)
 
           dashboard = '\n'.join([
-              '| Metric | Progress |',
-              '|---|---:|',
-              f'| Total Problems | **{total}** |',
-              f'| Solved | **{solved_count}** |',
-              f'| Unsolved | **{unsolved_count}** |',
-              f'| Easy | **{easy}** |',
-              f'| Medium | **{medium}** |',
-              f'| Hard | **{hard}** |',
-              '',
-              f'**Last updated:** {date.today().isoformat()}',
-              '',
+              '| Metric | Progress |', '|---|---:|',
+              f'| Total Problems | **{total}** |', f'| Solved | **{solved_count}** |',
+              f'| Unsolved | **{unsolved_count}** |', f'| Easy | **{easy}** |',
+              f'| Medium | **{medium}** |', f'| Hard | **{hard}** |', '',
+              f'**Last updated:** {date.today().isoformat()}', '',
               '**Daily practice matters more than chasing a number.** The goal is to keep learning, understand patterns, and become a better problem solver one problem at a time.',
           ])
 
@@ -264,7 +202,6 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add README.md .github/leetcode-sync-state.json
           git add --all
           git diff --cached --quiet && exit 0
           git commit -m 'chore: sync LeetCode submissions and progress'
