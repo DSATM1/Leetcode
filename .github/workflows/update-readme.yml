@@ -3,9 +3,6 @@ name: Update LeetCode README
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - 'README.md'
-      - '.github/workflows/update-readme.yml'
   workflow_dispatch:
 
 permissions:
@@ -33,7 +30,6 @@ jobs:
           for folder in root.iterdir():
               if not folder.is_dir() or not re.match(r'^\d+-', folder.name):
                   continue
-
               match = re.match(r'^(\d+)-(.*)$', folder.name)
               if not match:
                   continue
@@ -62,9 +58,6 @@ jobs:
                   difficulty = diff_match.group(1).capitalize()
 
               language = ', '.join(sorted({p.suffix.lower().lstrip('.') for p in solution_files})) or '—'
-              problem_url = f'https://leetcode.com/problems/{slug}/'
-              relative = folder.as_posix()
-
               problems.append({
                   'number': number,
                   'slug': slug,
@@ -72,21 +65,19 @@ jobs:
                   'difficulty': difficulty,
                   'solved': solved,
                   'language': language,
-                  'url': problem_url,
-                  'relative': relative,
+                  'url': f'https://leetcode.com/problems/{slug}/',
+                  'relative': folder.as_posix(),
               })
 
           problems.sort(key=lambda x: x['number'])
-
           total = len(problems)
           solved_count = sum(p['solved'] for p in problems)
           unsolved_count = total - solved_count
           easy = sum(p['difficulty'] == 'Easy' for p in problems)
           medium = sum(p['difficulty'] == 'Medium' for p in problems)
           hard = sum(p['difficulty'] == 'Hard' for p in problems)
-          updated = date.today().isoformat()
 
-          rows = [
+          dashboard = '\n'.join([
               '| Metric | Progress |',
               '|---|---:|',
               f'| Total Problems | **{total}** |',
@@ -96,46 +87,30 @@ jobs:
               f'| Medium | **{medium}** |',
               f'| Hard | **{hard}** |',
               '',
-              f'**Last updated:** {updated}',
+              f'**Last updated:** {date.today().isoformat()}',
               '',
               '**Daily practice matters more than chasing a number.** The goal is to keep learning, understand patterns, and become a better problem solver one problem at a time.',
-          ]
-          dashboard = '\n'.join(rows)
+          ])
 
-          table = [
-              '| # | Problem | Difficulty | Language | Solution |',
-              '|---:|---|---|---|---|',
-          ]
+          table = ['| # | Problem | Difficulty | Language | Solution |', '|---:|---|---|---|---|']
           for idx, p in enumerate(problems, start=1):
-              difficulty = p['difficulty']
-              if difficulty == 'Easy':
-                  badge = '🟢 Easy'
-              elif difficulty == 'Medium':
-                  badge = '🟡 Medium'
-              elif difficulty == 'Hard':
-                  badge = '🔴 Hard'
-              else:
-                  badge = '⚪ Unspecified'
-              solution_link = f'[{p["language"]}]({p["relative"]})' if p['solved'] else '—'
-              table.append(
-                  f'| {idx} | [{p["number"]}. {p["title"]}]({p["url"]}) | {badge} | {p["language"]} | {solution_link} |'
-              )
-
+              badge = {'Easy':'🟢 Easy', 'Medium':'🟡 Medium', 'Hard':'🔴 Hard'}.get(p['difficulty'], '⚪ Unspecified')
+              solution = f'[{p["language"]}]({p["relative"]})' if p['solved'] else '—'
+              table.append(f'| {idx} | [{p["number"]}. {p["title"]}]({p["url"]}) | {badge} | {p["language"]} | {solution} |')
           problem_list = '\n'.join(table)
 
           readme_path = root / 'README.md'
           text = readme_path.read_text(encoding='utf-8')
-
-          pattern_dashboard = r'<!-- AUTO-GENERATED:START -->.*?<!-- AUTO-GENERATED:END -->'
-          replacement_dashboard = f'<!-- AUTO-GENERATED:START -->\n\n{dashboard}\n\n<!-- AUTO-GENERATED:END -->'
-          text = re.sub(pattern_dashboard, replacement_dashboard, text, flags=re.S)
-
-          pattern_list = r'<!-- PROBLEM-LIST:START -->.*?<!-- PROBLEM-LIST:END -->'
-          replacement_list = f'<!-- PROBLEM-LIST:START -->\n\n{problem_list}\n\n<!-- PROBLEM-LIST:END -->'
-          text = re.sub(pattern_list, replacement_list, text, flags=re.S)
-
+          text = re.sub(
+              r'<!-- AUTO-GENERATED:START -->.*?<!-- AUTO-GENERATED:END -->',
+              f'<!-- AUTO-GENERATED:START -->\n\n{dashboard}\n\n<!-- AUTO-GENERATED:END -->',
+              text, flags=re.S)
+          text = re.sub(
+              r'<!-- PROBLEM-LIST:START -->.*?<!-- PROBLEM-LIST:END -->',
+              f'<!-- PROBLEM-LIST:START -->\n\n{problem_list}\n\n<!-- PROBLEM-LIST:END -->',
+              text, flags=re.S)
           readme_path.write_text(text, encoding='utf-8')
-          print(f'Generated README: total={total}, solved={solved_count}, unsolved={unsolved_count}, easy={easy}, medium={medium}, hard={hard}')
+          print(f'Generated: total={total}, solved={solved_count}, unsolved={unsolved_count}, easy={easy}, medium={medium}, hard={hard}')
 
       - name: Commit README changes
         run: |
