@@ -1,0 +1,147 @@
+name: Update LeetCode README
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'README.md'
+      - '.github/workflows/update-readme.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate README dashboard
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+          from datetime import date
+
+          root = Path('.')
+          supported = {'.py', '.java', '.cpp', '.js', '.ts'}
+          problems = []
+
+          for folder in root.iterdir():
+              if not folder.is_dir() or not re.match(r'^\d+-', folder.name):
+                  continue
+
+              match = re.match(r'^(\d+)-(.*)$', folder.name)
+              if not match:
+                  continue
+
+              number = int(match.group(1))
+              slug = match.group(2)
+              readme = folder / 'README.md'
+              readme_text = readme.read_text(encoding='utf-8') if readme.exists() else ''
+
+              solution_files = sorted(
+                  p for p in folder.iterdir()
+                  if p.is_file() and p.suffix.lower() in supported
+              )
+              solved = bool(solution_files)
+
+              title = slug.replace('-', ' ').title()
+              title_match = re.search(r'^#\s+(?:\d+\.\s*)?(.+)$', readme_text, re.MULTILINE)
+              if title_match:
+                  title = re.sub(r'^\d+\.\s*', '', title_match.group(1).strip())
+
+              difficulty = 'Unspecified'
+              diff_match = re.search(r'(?:Difficulty|Level)\s*[:|\-]\s*(Easy|Medium|Hard)', readme_text, re.I)
+              if not diff_match:
+                  diff_match = re.search(r'\b(Easy|Medium|Hard)\b', readme_text, re.I)
+              if diff_match:
+                  difficulty = diff_match.group(1).capitalize()
+
+              language = ', '.join(sorted({p.suffix.lower().lstrip('.') for p in solution_files})) or '—'
+              problem_url = f'https://leetcode.com/problems/{slug}/'
+              relative = folder.as_posix()
+
+              problems.append({
+                  'number': number,
+                  'slug': slug,
+                  'title': title,
+                  'difficulty': difficulty,
+                  'solved': solved,
+                  'language': language,
+                  'url': problem_url,
+                  'relative': relative,
+              })
+
+          problems.sort(key=lambda x: x['number'])
+
+          total = len(problems)
+          solved_count = sum(p['solved'] for p in problems)
+          unsolved_count = total - solved_count
+          easy = sum(p['difficulty'] == 'Easy' for p in problems)
+          medium = sum(p['difficulty'] == 'Medium' for p in problems)
+          hard = sum(p['difficulty'] == 'Hard' for p in problems)
+          updated = date.today().isoformat()
+
+          rows = [
+              '| Metric | Progress |',
+              '|---|---:|',
+              f'| Total Problems | **{total}** |',
+              f'| Solved | **{solved_count}** |',
+              f'| Unsolved | **{unsolved_count}** |',
+              f'| Easy | **{easy}** |',
+              f'| Medium | **{medium}** |',
+              f'| Hard | **{hard}** |',
+              '',
+              f'**Last updated:** {updated}',
+              '',
+              '**Daily practice matters more than chasing a number.** The goal is to keep learning, understand patterns, and become a better problem solver one problem at a time.',
+          ]
+          dashboard = '\n'.join(rows)
+
+          table = [
+              '| # | Problem | Difficulty | Language | Solution |',
+              '|---:|---|---|---|---|',
+          ]
+          for idx, p in enumerate(problems, start=1):
+              difficulty = p['difficulty']
+              if difficulty == 'Easy':
+                  badge = '🟢 Easy'
+              elif difficulty == 'Medium':
+                  badge = '🟡 Medium'
+              elif difficulty == 'Hard':
+                  badge = '🔴 Hard'
+              else:
+                  badge = '⚪ Unspecified'
+              solution_link = f'[{p["language"]}]({p["relative"]})' if p['solved'] else '—'
+              table.append(
+                  f'| {idx} | [{p["number"]}. {p["title"]}]({p["url"]}) | {badge} | {p["language"]} | {solution_link} |'
+              )
+
+          problem_list = '\n'.join(table)
+
+          readme_path = root / 'README.md'
+          text = readme_path.read_text(encoding='utf-8')
+
+          pattern_dashboard = r'<!-- AUTO-GENERATED:START -->.*?<!-- AUTO-GENERATED:END -->'
+          replacement_dashboard = f'<!-- AUTO-GENERATED:START -->\n\n{dashboard}\n\n<!-- AUTO-GENERATED:END -->'
+          text = re.sub(pattern_dashboard, replacement_dashboard, text, flags=re.S)
+
+          pattern_list = r'<!-- PROBLEM-LIST:START -->.*?<!-- PROBLEM-LIST:END -->'
+          replacement_list = f'<!-- PROBLEM-LIST:START -->\n\n{problem_list}\n\n<!-- PROBLEM-LIST:END -->'
+          text = re.sub(pattern_list, replacement_list, text, flags=re.S)
+
+          readme_path.write_text(text, encoding='utf-8')
+          print(f'Generated README: total={total}, solved={solved_count}, unsolved={unsolved_count}, easy={easy}, medium={medium}, hard={hard}')
+
+      - name: Commit README changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add README.md
+          git diff --cached --quiet && exit 0
+          git commit -m 'docs: automatically update LeetCode progress'
+          git push
