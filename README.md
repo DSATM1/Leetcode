@@ -54,7 +54,7 @@ Every problem helps me practice one or more of these skills:
 | 3 | [17. Letter Combinations Of A Phone Number](https://leetcode.com/problems/letter-combinations-of-a-phone-number/) | 🟡 Medium | py | [py](17-letter-combinations-of-a-phone-number) |
 | 4 | [21. Merge Two Sorted Lists](https://leetcode.com/problems/merge-two-sorted-lists/) | 🟢 Easy | py | [py](21-merge-two-sorted-lists) |
 | 5 | [26. Remove Duplicates From Sorted Array](https://leetcode.com/problems/remove-duplicates-from-sorted-array/) | 🟢 Easy | py | [py](26-remove-duplicates-from-sorted-array) |
-| 6 | [35. Search Insert Position](https://leetcode.com/problems/search-insert-position/) | 🟢 Easy | java | [java](35-search-insert-position) |
+| 6 | [35. Search Insert Position](https://leetcode.com/problems/search-insert-position/) | 🟢 Easy | java, py | [java, py](35-search-insert-position) |
 | 7 | [57. Insert Interval](https://leetcode.com/problems/insert-interval/) | 🟡 Medium | py | [py](57-insert-interval) |
 | 8 | [62. Unique Paths](https://leetcode.com/problems/unique-paths/) | 🟡 Medium | py | [py](62-unique-paths) |
 | 9 | [67. Add Binary](https://leetcode.com/problems/add-binary/) | 🟢 Easy | py | [py](67-add-binary) |
