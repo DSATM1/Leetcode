@@ -30,10 +30,10 @@ Every problem helps me practice one or more of these skills:
 
 | Metric | Progress |
 |---|---:|
-| Total Problems | **118** |
-| Solved | **118** |
+| Total Problems | **119** |
+| Solved | **119** |
 | Unsolved | **0** |
-| Easy | **42** |
+| Easy | **43** |
 | Medium | **63** |
 | Hard | **13** |
 
@@ -135,38 +135,39 @@ Every problem helps me practice one or more of these skills:
 | 84 | [2182. Find The Minimum And Maximum Number Of Nodes Between Critical Points](https://leetcode.com/problems/find-the-minimum-and-maximum-number-of-nodes-between-critical-points/) | 🟡 Medium | py | [py](2182-find-the-minimum-and-maximum-number-of-nodes-between-critical-points) |
 | 85 | [2212. Removing Minimum And Maximum From Array](https://leetcode.com/problems/removing-minimum-and-maximum-from-array/) | 🟡 Medium | py | [py](2212-removing-minimum-and-maximum-from-array) |
 | 86 | [2236. Maximum Twin Sum Of A Linked List](https://leetcode.com/problems/maximum-twin-sum-of-a-linked-list/) | 🟡 Medium | py | [py](2236-maximum-twin-sum-of-a-linked-list) |
-| 87 | [2319. Longest Substring Of One Repeating Character](https://leetcode.com/problems/longest-substring-of-one-repeating-character/) | 🔴 Hard | py | [py](2319-longest-substring-of-one-repeating-character) |
-| 88 | [2392. Successful Pairs Of Spells And Potions](https://leetcode.com/problems/successful-pairs-of-spells-and-potions/) | 🟡 Medium | py | [py](2392-successful-pairs-of-spells-and-potions) |
-| 89 | [2413. Smallest Number In Infinite Set](https://leetcode.com/problems/smallest-number-in-infinite-set/) | 🟡 Medium | py | [py](2413-smallest-number-in-infinite-set) |
-| 90 | [2553. Total Cost To Hire K Workers](https://leetcode.com/problems/total-cost-to-hire-k-workers/) | 🟡 Medium | py | [py](2553-total-cost-to-hire-k-workers) |
-| 91 | [2636. Maximum Subsequence Score](https://leetcode.com/problems/maximum-subsequence-score/) | 🟡 Medium | py | [py](2636-maximum-subsequence-score) |
-| 92 | [3150. Shortest And Lexicographically Smallest Beautiful String](https://leetcode.com/problems/shortest-and-lexicographically-smallest-beautiful-string/) | 🟡 Medium | py | [py](3150-shortest-and-lexicographically-smallest-beautiful-string) |
-| 93 | [3219. Make Lexicographically Smallest Array By Swapping Elements](https://leetcode.com/problems/make-lexicographically-smallest-array-by-swapping-elements/) | 🟡 Medium | py | [py](3219-make-lexicographically-smallest-array-by-swapping-elements) |
-| 94 | [3225. Length Of Longest Subarray With At Most K Frequency](https://leetcode.com/problems/length-of-longest-subarray-with-at-most-k-frequency/) | 🟡 Medium | py | [py](3225-length-of-longest-subarray-with-at-most-k-frequency) |
-| 95 | [3236. Smallest Missing Integer Greater Than Sequential Prefix Sum](https://leetcode.com/problems/smallest-missing-integer-greater-than-sequential-prefix-sum/) | 🟢 Easy | py | [py](3236-smallest-missing-integer-greater-than-sequential-prefix-sum) |
-| 96 | [3347. Distribute Elements Into Two Arrays I](https://leetcode.com/problems/distribute-elements-into-two-arrays-i/) | 🟢 Easy | py | [py](3347-distribute-elements-into-two-arrays-i) |
-| 97 | [3349. Maximum Length Substring With Two Occurrences](https://leetcode.com/problems/maximum-length-substring-with-two-occurrences/) | 🟢 Easy | py | [py](3349-maximum-length-substring-with-two-occurrences) |
-| 98 | [3375. Kth Smallest Amount With Single Denomination Combination](https://leetcode.com/problems/kth-smallest-amount-with-single-denomination-combination/) | 🔴 Hard | py | [py](3375-kth-smallest-amount-with-single-denomination-combination) |
-| 99 | [3435. Block Placement Queries](https://leetcode.com/problems/block-placement-queries/) | 🔴 Hard | py | [py](3435-block-placement-queries) |
-| 100 | [3561. Remove Methods From Project](https://leetcode.com/problems/remove-methods-from-project/) | 🟡 Medium | py | [py](3561-remove-methods-from-project) |
-| 101 | [3584. Find The Lexicographically Smallest Valid Sequence](https://leetcode.com/problems/find-the-lexicographically-smallest-valid-sequence/) | 🟡 Medium | py | [py](3584-find-the-lexicographically-smallest-valid-sequence) |
-| 102 | [3626. Smallest Divisible Digit Product I](https://leetcode.com/problems/smallest-divisible-digit-product-i/) | 🟢 Easy | py | [py](3626-smallest-divisible-digit-product-i) |
-| 103 | [3635. Smallest Divisible Digit Product Ii](https://leetcode.com/problems/smallest-divisible-digit-product-ii/) | 🔴 Hard | py | [py](3635-smallest-divisible-digit-product-ii) |
-| 104 | [3705. Find The Largest Almost Missing Integer](https://leetcode.com/problems/find-the-largest-almost-missing-integer/) | 🟢 Easy | py | [py](3705-find-the-largest-almost-missing-integer) |
-| 105 | [3870. Minimum Moves To Clean The Classroom](https://leetcode.com/problems/minimum-moves-to-clean-the-classroom/) | 🟡 Medium | py | [py](3870-minimum-moves-to-clean-the-classroom) |
-| 106 | [3918. Check Divisibility By Digit Sum And Product](https://leetcode.com/problems/check-divisibility-by-digit-sum-and-product/) | 🟢 Easy | py | [py](3918-check-divisibility-by-digit-sum-and-product) |
-| 107 | [3931. Process String With Special Operations I](https://leetcode.com/problems/process-string-with-special-operations-i/) | 🟡 Medium | py | [py](3931-process-string-with-special-operations-i) |
-| 108 | [3939. Process String With Special Operations Ii](https://leetcode.com/problems/process-string-with-special-operations-ii/) | 🔴 Hard | py | [py](3939-process-string-with-special-operations-ii) |
-| 109 | [4020. Lexicographically Smallest Permutation Greater Than Target](https://leetcode.com/problems/lexicographically-smallest-permutation-greater-than-target/) | 🟡 Medium | py | [py](4020-lexicographically-smallest-permutation-greater-than-target) |
-| 110 | [4033. Longest Subsequence With Non Zero Bitwise Xor](https://leetcode.com/problems/longest-subsequence-with-non-zero-bitwise-xor/) | 🟡 Medium | py | [py](4033-longest-subsequence-with-non-zero-bitwise-xor) |
-| 111 | [4037. Lexicographically Smallest Palindromic Permutation Greater Than Target](https://leetcode.com/problems/lexicographically-smallest-palindromic-permutation-greater-than-target/) | 🔴 Hard | py | [py](4037-lexicographically-smallest-palindromic-permutation-greater-than-target) |
-| 112 | [4080. Smallest Missing Multiple Of K](https://leetcode.com/problems/smallest-missing-multiple-of-k/) | 🟢 Easy | py | [py](4080-smallest-missing-multiple-of-k) |
-| 113 | [4107. Find Missing Elements](https://leetcode.com/problems/find-missing-elements/) | 🟢 Easy | py | [py](4107-find-missing-elements) |
-| 114 | [4216. Weighted Word Mapping](https://leetcode.com/problems/weighted-word-mapping/) | 🟢 Easy | py | [py](4216-weighted-word-mapping) |
-| 115 | [4256. Construct Uniform Parity Array I](https://leetcode.com/problems/construct-uniform-parity-array-i/) | 🟢 Easy | py | [py](4256-construct-uniform-parity-array-i) |
-| 116 | [4258. Construct Uniform Parity Array Ii](https://leetcode.com/problems/construct-uniform-parity-array-ii/) | 🟡 Medium | py | [py](4258-construct-uniform-parity-array-ii) |
-| 117 | [4284. Smallest Stable Index I](https://leetcode.com/problems/smallest-stable-index-i/) | 🟢 Easy | py | [py](4284-smallest-stable-index-i) |
-| 118 | [4285. Smallest Stable Index Ii](https://leetcode.com/problems/smallest-stable-index-ii/) | 🟡 Medium | py | [py](4285-smallest-stable-index-ii) |
+| 87 | [2248. Minimum Cost Of Buying Candies With Discount](https://leetcode.com/problems/minimum-cost-of-buying-candies-with-discount/) | 🟢 Easy | py | [py](2248-minimum-cost-of-buying-candies-with-discount) |
+| 88 | [2319. Longest Substring Of One Repeating Character](https://leetcode.com/problems/longest-substring-of-one-repeating-character/) | 🔴 Hard | py | [py](2319-longest-substring-of-one-repeating-character) |
+| 89 | [2392. Successful Pairs Of Spells And Potions](https://leetcode.com/problems/successful-pairs-of-spells-and-potions/) | 🟡 Medium | py | [py](2392-successful-pairs-of-spells-and-potions) |
+| 90 | [2413. Smallest Number In Infinite Set](https://leetcode.com/problems/smallest-number-in-infinite-set/) | 🟡 Medium | py | [py](2413-smallest-number-in-infinite-set) |
+| 91 | [2553. Total Cost To Hire K Workers](https://leetcode.com/problems/total-cost-to-hire-k-workers/) | 🟡 Medium | py | [py](2553-total-cost-to-hire-k-workers) |
+| 92 | [2636. Maximum Subsequence Score](https://leetcode.com/problems/maximum-subsequence-score/) | 🟡 Medium | py | [py](2636-maximum-subsequence-score) |
+| 93 | [3150. Shortest And Lexicographically Smallest Beautiful String](https://leetcode.com/problems/shortest-and-lexicographically-smallest-beautiful-string/) | 🟡 Medium | py | [py](3150-shortest-and-lexicographically-smallest-beautiful-string) |
+| 94 | [3219. Make Lexicographically Smallest Array By Swapping Elements](https://leetcode.com/problems/make-lexicographically-smallest-array-by-swapping-elements/) | 🟡 Medium | py | [py](3219-make-lexicographically-smallest-array-by-swapping-elements) |
+| 95 | [3225. Length Of Longest Subarray With At Most K Frequency](https://leetcode.com/problems/length-of-longest-subarray-with-at-most-k-frequency/) | 🟡 Medium | py | [py](3225-length-of-longest-subarray-with-at-most-k-frequency) |
+| 96 | [3236. Smallest Missing Integer Greater Than Sequential Prefix Sum](https://leetcode.com/problems/smallest-missing-integer-greater-than-sequential-prefix-sum/) | 🟢 Easy | py | [py](3236-smallest-missing-integer-greater-than-sequential-prefix-sum) |
+| 97 | [3347. Distribute Elements Into Two Arrays I](https://leetcode.com/problems/distribute-elements-into-two-arrays-i/) | 🟢 Easy | py | [py](3347-distribute-elements-into-two-arrays-i) |
+| 98 | [3349. Maximum Length Substring With Two Occurrences](https://leetcode.com/problems/maximum-length-substring-with-two-occurrences/) | 🟢 Easy | py | [py](3349-maximum-length-substring-with-two-occurrences) |
+| 99 | [3375. Kth Smallest Amount With Single Denomination Combination](https://leetcode.com/problems/kth-smallest-amount-with-single-denomination-combination/) | 🔴 Hard | py | [py](3375-kth-smallest-amount-with-single-denomination-combination) |
+| 100 | [3435. Block Placement Queries](https://leetcode.com/problems/block-placement-queries/) | 🔴 Hard | py | [py](3435-block-placement-queries) |
+| 101 | [3561. Remove Methods From Project](https://leetcode.com/problems/remove-methods-from-project/) | 🟡 Medium | py | [py](3561-remove-methods-from-project) |
+| 102 | [3584. Find The Lexicographically Smallest Valid Sequence](https://leetcode.com/problems/find-the-lexicographically-smallest-valid-sequence/) | 🟡 Medium | py | [py](3584-find-the-lexicographically-smallest-valid-sequence) |
+| 103 | [3626. Smallest Divisible Digit Product I](https://leetcode.com/problems/smallest-divisible-digit-product-i/) | 🟢 Easy | py | [py](3626-smallest-divisible-digit-product-i) |
+| 104 | [3635. Smallest Divisible Digit Product Ii](https://leetcode.com/problems/smallest-divisible-digit-product-ii/) | 🔴 Hard | py | [py](3635-smallest-divisible-digit-product-ii) |
+| 105 | [3705. Find The Largest Almost Missing Integer](https://leetcode.com/problems/find-the-largest-almost-missing-integer/) | 🟢 Easy | py | [py](3705-find-the-largest-almost-missing-integer) |
+| 106 | [3870. Minimum Moves To Clean The Classroom](https://leetcode.com/problems/minimum-moves-to-clean-the-classroom/) | 🟡 Medium | py | [py](3870-minimum-moves-to-clean-the-classroom) |
+| 107 | [3918. Check Divisibility By Digit Sum And Product](https://leetcode.com/problems/check-divisibility-by-digit-sum-and-product/) | 🟢 Easy | py | [py](3918-check-divisibility-by-digit-sum-and-product) |
+| 108 | [3931. Process String With Special Operations I](https://leetcode.com/problems/process-string-with-special-operations-i/) | 🟡 Medium | py | [py](3931-process-string-with-special-operations-i) |
+| 109 | [3939. Process String With Special Operations Ii](https://leetcode.com/problems/process-string-with-special-operations-ii/) | 🔴 Hard | py | [py](3939-process-string-with-special-operations-ii) |
+| 110 | [4020. Lexicographically Smallest Permutation Greater Than Target](https://leetcode.com/problems/lexicographically-smallest-permutation-greater-than-target/) | 🟡 Medium | py | [py](4020-lexicographically-smallest-permutation-greater-than-target) |
+| 111 | [4033. Longest Subsequence With Non Zero Bitwise Xor](https://leetcode.com/problems/longest-subsequence-with-non-zero-bitwise-xor/) | 🟡 Medium | py | [py](4033-longest-subsequence-with-non-zero-bitwise-xor) |
+| 112 | [4037. Lexicographically Smallest Palindromic Permutation Greater Than Target](https://leetcode.com/problems/lexicographically-smallest-palindromic-permutation-greater-than-target/) | 🔴 Hard | py | [py](4037-lexicographically-smallest-palindromic-permutation-greater-than-target) |
+| 113 | [4080. Smallest Missing Multiple Of K](https://leetcode.com/problems/smallest-missing-multiple-of-k/) | 🟢 Easy | py | [py](4080-smallest-missing-multiple-of-k) |
+| 114 | [4107. Find Missing Elements](https://leetcode.com/problems/find-missing-elements/) | 🟢 Easy | py | [py](4107-find-missing-elements) |
+| 115 | [4216. Weighted Word Mapping](https://leetcode.com/problems/weighted-word-mapping/) | 🟢 Easy | py | [py](4216-weighted-word-mapping) |
+| 116 | [4256. Construct Uniform Parity Array I](https://leetcode.com/problems/construct-uniform-parity-array-i/) | 🟢 Easy | py | [py](4256-construct-uniform-parity-array-i) |
+| 117 | [4258. Construct Uniform Parity Array Ii](https://leetcode.com/problems/construct-uniform-parity-array-ii/) | 🟡 Medium | py | [py](4258-construct-uniform-parity-array-ii) |
+| 118 | [4284. Smallest Stable Index I](https://leetcode.com/problems/smallest-stable-index-i/) | 🟢 Easy | py | [py](4284-smallest-stable-index-i) |
+| 119 | [4285. Smallest Stable Index Ii](https://leetcode.com/problems/smallest-stable-index-ii/) | 🟡 Medium | py | [py](4285-smallest-stable-index-ii) |
 
 <!-- PROBLEM-LIST:END -->
 
