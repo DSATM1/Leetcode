@@ -30,11 +30,11 @@ Every problem helps me practice one or more of these skills:
 
 | Metric | Progress |
 |---|---:|
-| Total Problems | **123** |
-| Solved | **123** |
+| Total Problems | **124** |
+| Solved | **124** |
 | Unsolved | **0** |
 | Easy | **44** |
-| Medium | **65** |
+| Medium | **66** |
 | Hard | **14** |
 
 **Last updated:** 2026-09-09
@@ -168,10 +168,11 @@ Every problem helps me practice one or more of these skills:
 | 117 | [4107. Find Missing Elements](https://leetcode.com/problems/find-missing-elements/) | 🟢 Easy | py | [py](4107-find-missing-elements) |
 | 118 | [4216. Weighted Word Mapping](https://leetcode.com/problems/weighted-word-mapping/) | 🟢 Easy | py | [py](4216-weighted-word-mapping) |
 | 119 | [4245. Count Commas In Range](https://leetcode.com/problems/count-commas-in-range/) | 🟢 Easy | py | [py](4245-count-commas-in-range) |
-| 120 | [4256. Construct Uniform Parity Array I](https://leetcode.com/problems/construct-uniform-parity-array-i/) | 🟢 Easy | py | [py](4256-construct-uniform-parity-array-i) |
-| 121 | [4258. Construct Uniform Parity Array Ii](https://leetcode.com/problems/construct-uniform-parity-array-ii/) | 🟡 Medium | py | [py](4258-construct-uniform-parity-array-ii) |
-| 122 | [4284. Smallest Stable Index I](https://leetcode.com/problems/smallest-stable-index-i/) | 🟢 Easy | py | [py](4284-smallest-stable-index-i) |
-| 123 | [4285. Smallest Stable Index Ii](https://leetcode.com/problems/smallest-stable-index-ii/) | 🟡 Medium | py | [py](4285-smallest-stable-index-ii) |
+| 120 | [4248. Count Commas In Range Ii](https://leetcode.com/problems/count-commas-in-range-ii/) | 🟡 Medium | py | [py](4248-count-commas-in-range-ii) |
+| 121 | [4256. Construct Uniform Parity Array I](https://leetcode.com/problems/construct-uniform-parity-array-i/) | 🟢 Easy | py | [py](4256-construct-uniform-parity-array-i) |
+| 122 | [4258. Construct Uniform Parity Array Ii](https://leetcode.com/problems/construct-uniform-parity-array-ii/) | 🟡 Medium | py | [py](4258-construct-uniform-parity-array-ii) |
+| 123 | [4284. Smallest Stable Index I](https://leetcode.com/problems/smallest-stable-index-i/) | 🟢 Easy | py | [py](4284-smallest-stable-index-i) |
+| 124 | [4285. Smallest Stable Index Ii](https://leetcode.com/problems/smallest-stable-index-ii/) | 🟡 Medium | py | [py](4285-smallest-stable-index-ii) |
 
 <!-- PROBLEM-LIST:END -->
 
