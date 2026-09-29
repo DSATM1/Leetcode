@@ -26,6 +26,7 @@ class Solution:
                 if i == level_length - 1:
                     result.append(node.val)
                 
+                # Add child nodes to the queue for the next level
                 if node.left:
                     queue.append(node.left)
                 if node.right:
