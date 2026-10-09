@@ -10,26 +10,27 @@ class Solution:
         # Create a hash map to instantly find the index of any root value in the inorder list
         inorder_map = {val: idx for idx, val in enumerate(inorder)}
         
-        # Turn preorder into an iterator so we can sequentially grab the next root
+        # Iterator to fetch the next root value from preorder in O(1)
         preorder_iter = iter(preorder)
         
-        def build(left, right):
+        def array_to_tree(left: int, right: int) -> TreeNode | None:
             # Base case: if there are no elements to construct the tree
             if left > right:
                 return None
             
-            # The first element in current preorder is always the root of the current subtree
+            # The next element in preorder is always the root of the current subtree
             root_val = next(preorder_iter)
             root = TreeNode(root_val)
             
-            # Find the root's position in the inorder traversal
+            # Get the index of this root in the inorder traversal
             mid = inorder_map[root_val]
             
-            # Recursively build the left and right subtrees. 
-            # Note: Left must be built first because preorder is (root -> left -> right)
-            root.left = build(left, mid - 1)
-            root.right = build(mid + 1, right)
+            # Recursively build the left and right subtrees
+            # Note: We must build the left subtree first because the preorder 
+            # iterator progresses in a Root -> Left -> Right pattern.
+            root.left = array_to_tree(left, mid - 1)
+            root.right = array_to_tree(mid + 1, right)
             
             return root
-        
-        return build(0, len(inorder) - 1)
+            
+        return array_to_tree(0, len(inorder) - 1)
